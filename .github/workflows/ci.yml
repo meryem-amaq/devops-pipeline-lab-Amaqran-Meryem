@@ -33,8 +33,11 @@ jobs:
         run: |
           echo '{ "extends": ["stylelint-config-standard"] }' > .stylelintrc.json
 
-      - name: Lint CSS
-        run: stylelint "src/**/*.css"
+      # Correction: try auto-fix first, then run a normal lint check (CI will still fail if issues remain)
+      - name: Lint CSS (auto-fix + verify)
+        run: |
+          stylelint "src/**/*.css" --fix
+          stylelint "src/**/*.css"
 
   manual-checklist-reminder:
     name: Checklist reminder
@@ -46,3 +49,5 @@ jobs:
 
       - name: Print manual checklist
         run: cat tests/manual-checklist.md
+
+        

@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  lint-and-validate:
+    name: Lint & Validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install html-validate
+        run: npm install --global html-validate
+
+      - name: Validate HTML
+        run: html-validate index.html
+
+      - name: Install stylelint
+        run: npm install --global stylelint stylelint-config-standard
+
+      - name: Create stylelint config
+        run: |
+          echo '{ "extends": ["stylelint-config-standard"] }' > .stylelintrc.json
+
+      - name: Lint CSS
+        run: stylelint "src/**/*.css"
+
+  manual-checklist-reminder:
+    name: Checklist reminder
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Print manual checklist
+        run: cat tests/manual-checklist.md
